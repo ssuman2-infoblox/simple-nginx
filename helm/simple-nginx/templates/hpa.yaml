@@ -1,0 +1,41 @@
+{{- if $.Values.autoscaling.enabled }}
+{{- range $zone := $.Values.availabilityZones }}
+{{- $appName := default $.Chart.Name $.Values.nameOverride }}
+{{- if $.Values.fullnameOverride }}
+{{ $appName := $.Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $appName }}
+  namespace: {{ $.Values.namespace | default "ssuman2" }}
+  labels:
+    availability-zone: {{ $zone.name }}
+    app.kubernetes.io/name: {{ $.Chart.Name }}-hpa
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $appName }}-{{ $zone.name }}
+  minReplicas: {{ $.Values.autoscaling.minReplicas }}
+  maxReplicas: {{ $.Values.autoscaling.maxReplicas }}
+  metrics:
+    {{- if $.Values.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ $.Values.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if $.Values.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ $.Values.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+---
+{{- end }}
+{{- end }}

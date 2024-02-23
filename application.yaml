@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: simple-nginx-values
+  namespace: ssuman2
+data:
+  values.yaml: |
+    service:
+      type: ClusterIP
+---
+apiVersion: core.oam.dev/v1beta1
+kind: Application
+metadata:
+  name: simple-nginx
+  namespace: ssuman2
+  labels:
+    fluxcd.io/system: kubevela
+spec:
+  components:
+    - name: simple-nginx
+      type: helm
+      properties:
+        bootstrap: true
+        chart: simple-nginx
+        createNamespace: false
+        disableHooks: false
+        install:
+          crds: Create
+          remediation:
+            retries: -1
+        installTimeout: 30m
+        interval: 5m
+        pullInterval: 5m
+        releaseName: simple-nginx
+        repoType: helm
+        retries: -1
+        sourceRef:
+          kind: HelmRepository
+          name: ssuman2-helm-charts
+          namespace: ssuman2
+        targetNamespace: ssuman2
+        timeout: 20m
+        upgrade:
+          remediation:
+            retries: -1
+        valuesFrom:
+          - kind: ConfigMap
+            name: simple-nginx-values
+        version: v1.0.0-sujay

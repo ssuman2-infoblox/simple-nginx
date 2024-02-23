@@ -1,0 +1,33 @@
+{{- range $zone := $.Values.availabilityZones }}
+{{- $appName := default $.Chart.Name $.Values.nameOverride }}
+{{- if $.Values.fullnameOverride }}
+{{ $appName := $.Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $appName }}-{{ $zone.name }}
+  namespace: {{ $.Values.namespace | default "ssuman2" }}
+  labels:
+    availability-zone: {{ $zone.name }}
+    app.kubernetes.io/name: {{ $appName }}-{{ $zone.name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+spec:
+  type: {{ $.Values.service.type }}
+  ports:
+    - port: {{ $.Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    availability-zone: {{ $zone.name }}
+    app.kubernetes.io/name: {{ $appName }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+---
+{{- end}}

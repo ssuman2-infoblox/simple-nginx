@@ -1,0 +1,75 @@
+{{- range $zone := $.Values.availabilityZones }}
+{{- $appName := default $.Chart.Name $.Values.nameOverride }}
+{{- if $.Values.fullnameOverride }}
+{{ $appName := $.Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- $saName := default "default" $.Values.serviceAccount.name }}
+{{- if $.Values.serviceAccount.name }}
+{{ $saName := $.Values.serviceAccount.name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $appName }}-{{ $zone.name }}
+  namespace: {{ $.Values.namespace | default "ssuman2" }}
+  labels:
+    availability-zone: {{ $zone.name }}
+    app.kubernetes.io/name: {{ $.Chart.Name }}
+    app.kubernetes.io/managed-by: {{ $.Release.Service }}
+    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+spec:
+  {{- if not $.Values.autoscaling.enabled }}
+  replicas: {{ $zone.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      availability-zone: {{ $zone.name }}
+      app.kubernetes.io/name: {{ $.Chart.Name }}
+      app.kubernetes.io/managed-by: {{ $.Release.Service }}
+      app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+      helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+  template:
+    metadata:
+      labels:
+        availability-zone: {{ $zone.name }}
+        app.kubernetes.io/name: {{ $.Chart.Name }}
+        app.kubernetes.io/managed-by: {{ $.Release.Service }}
+        app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
+        app.kubernetes.io/instance: {{ $.Release.Name }}
+        helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+    spec:
+      serviceAccountName: {{ $saName }}
+      containers:
+        - name: {{ $.Chart.Name }}
+          securityContext:
+              {{- toYaml $.Values.securityContext | nindent 12 }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+              {{- toYaml $.Values.resources | nindent 12 }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: topology.kubernetes.io/zone
+                    operator: In
+                    values:
+                      - {{ $zone.name }}
+---
+{{ end }}

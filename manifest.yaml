@@ -1,0 +1,378 @@
+---
+# Source: simple-nginx/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-nginx-us-east-1b
+  namespace: ssuman2
+  labels:
+    availability-zone: us-east-1b
+    app.kubernetes.io/name: simple-nginx-us-east-1b
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    availability-zone: us-east-1b
+    app.kubernetes.io/name: simple-nginx
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+---
+# Source: simple-nginx/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-nginx-us-east-1c
+  namespace: ssuman2
+  labels:
+    availability-zone: us-east-1c
+    app.kubernetes.io/name: simple-nginx-us-east-1c
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    availability-zone: us-east-1c
+    app.kubernetes.io/name: simple-nginx
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+---
+# Source: simple-nginx/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-nginx-us-east-1d
+  namespace: ssuman2
+  labels:
+    availability-zone: us-east-1d
+    app.kubernetes.io/name: simple-nginx-us-east-1d
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    availability-zone: us-east-1d
+    app.kubernetes.io/name: simple-nginx
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+---
+# Source: simple-nginx/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-nginx-us-east-1b
+  namespace: ssuman2
+  labels:
+    availability-zone: us-east-1b
+    app.kubernetes.io/name: simple-nginx
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+spec:
+  selector:
+    matchLabels:
+      availability-zone: us-east-1b
+      app.kubernetes.io/name: simple-nginx
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/version: "1.16.0"
+      app.kubernetes.io/instance: simple-nginx
+      helm.sh/chart: simple-nginx-0.1.0
+  template:
+    metadata:
+      labels:
+        availability-zone: us-east-1b
+        app.kubernetes.io/name: simple-nginx
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/instance: simple-nginx
+        helm.sh/chart: simple-nginx-0.1.0
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: simple-nginx
+          securityContext:
+            {}
+          image: "infobloxcto/nginx:1.25.3"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: topology.kubernetes.io/zone
+                    operator: In
+                    values:
+                      - us-east-1b
+---
+# Source: simple-nginx/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-nginx-us-east-1c
+  namespace: ssuman2
+  labels:
+    availability-zone: us-east-1c
+    app.kubernetes.io/name: simple-nginx
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+spec:
+  selector:
+    matchLabels:
+      availability-zone: us-east-1c
+      app.kubernetes.io/name: simple-nginx
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/version: "1.16.0"
+      app.kubernetes.io/instance: simple-nginx
+      helm.sh/chart: simple-nginx-0.1.0
+  template:
+    metadata:
+      labels:
+        availability-zone: us-east-1c
+        app.kubernetes.io/name: simple-nginx
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/instance: simple-nginx
+        helm.sh/chart: simple-nginx-0.1.0
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: simple-nginx
+          securityContext:
+            {}
+          image: "infobloxcto/nginx:1.25.3"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: topology.kubernetes.io/zone
+                    operator: In
+                    values:
+                      - us-east-1c
+---
+# Source: simple-nginx/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-nginx-us-east-1d
+  namespace: ssuman2
+  labels:
+    availability-zone: us-east-1d
+    app.kubernetes.io/name: simple-nginx
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+spec:
+  selector:
+    matchLabels:
+      availability-zone: us-east-1d
+      app.kubernetes.io/name: simple-nginx
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/version: "1.16.0"
+      app.kubernetes.io/instance: simple-nginx
+      helm.sh/chart: simple-nginx-0.1.0
+  template:
+    metadata:
+      labels:
+        availability-zone: us-east-1d
+        app.kubernetes.io/name: simple-nginx
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/instance: simple-nginx
+        helm.sh/chart: simple-nginx-0.1.0
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: simple-nginx
+          securityContext:
+            {}
+          image: "infobloxcto/nginx:1.25.3"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: topology.kubernetes.io/zone
+                    operator: In
+                    values:
+                      - us-east-1d
+---
+# Source: simple-nginx/templates/hpa.yaml
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: simple-nginx
+  namespace: ssuman2
+  labels:
+    availability-zone: us-east-1b
+    app.kubernetes.io/name: simple-nginx-hpa
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: simple-nginx-us-east-1b
+  minReplicas: 1
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 80
+---
+# Source: simple-nginx/templates/hpa.yaml
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: simple-nginx
+  namespace: ssuman2
+  labels:
+    availability-zone: us-east-1c
+    app.kubernetes.io/name: simple-nginx-hpa
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: simple-nginx-us-east-1c
+  minReplicas: 1
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 80
+---
+# Source: simple-nginx/templates/hpa.yaml
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: simple-nginx
+  namespace: ssuman2
+  labels:
+    availability-zone: us-east-1d
+    app.kubernetes.io/name: simple-nginx-hpa
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/instance: simple-nginx
+    helm.sh/chart: simple-nginx-0.1.0
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: simple-nginx-us-east-1d
+  minReplicas: 1
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: 80
