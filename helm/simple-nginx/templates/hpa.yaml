@@ -7,7 +7,7 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ $appName }}
+  name: {{ $appName }}-hpa-{{ $zone.name }}
   namespace: {{ $.Values.namespace | default "ssuman2" }}
   labels:
     availability-zone: {{ $zone.name }}
