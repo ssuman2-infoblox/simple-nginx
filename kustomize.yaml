@@ -1,0 +1,40 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  finalizers:
+    - finalizers.fluxcd.io
+  name: simple-nginx
+  namespace: ssuman2
+spec:
+  interval: 1m
+  ref:
+    branch: main
+  secretRef:
+    name: ssuman2-git-auth
+  timeout: 60s
+  url: https://github.com/ssuman2/simple-nginx.git
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  annotations:
+    meta.helm.sh/release-name: ssuman2-apps
+    meta.helm.sh/release-namespace: ssuman2-apps
+  finalizers:
+    - finalizers.fluxcd.io
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    fluxcd.io/system: kubevela
+    helm.toolkit.fluxcd.io/namespace: ssuman2
+  name: ssuman2-apps
+  namespace: ssuman2
+spec:
+  force: false
+  interval: 1m
+  path: ./apps
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: simple-nginx
+    namespace: ssuman2
+  suspend: false
