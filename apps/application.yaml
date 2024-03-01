@@ -12,6 +12,10 @@ data:
     availabilityZones:
       - name: us-east-1b
         replicas: 2
+      - name: us-east-1c
+        replicas: 2
+      - name: us-east-1d
+        replicas: 3
 ---
 apiVersion: core.oam.dev/v1beta1
 kind: Application
