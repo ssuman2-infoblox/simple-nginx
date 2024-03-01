@@ -15,10 +15,7 @@ metadata:
   labels:
     availability-zone: {{ $zone.name }}
     app.kubernetes.io/name: {{ $.Chart.Name }}
-    app.kubernetes.io/managed-by: {{ $.Release.Service }}
-    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
-    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
 spec:
   {{- if not $.Values.autoscaling.enabled }}
   replicas: {{ $zone.replicas }}
@@ -27,10 +24,7 @@ spec:
     matchLabels:
       availability-zone: {{ $zone.name }}
       app.kubernetes.io/name: {{ $.Chart.Name }}
-      app.kubernetes.io/managed-by: {{ $.Release.Service }}
-      app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
       app.kubernetes.io/instance: {{ $.Release.Name }}
-      helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
   template:
     metadata:
       labels:

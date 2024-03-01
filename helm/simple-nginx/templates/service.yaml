@@ -11,10 +11,7 @@ metadata:
   labels:
     availability-zone: {{ $zone.name }}
     app.kubernetes.io/name: {{ $appName }}-{{ $zone.name }}
-    app.kubernetes.io/managed-by: {{ $.Release.Service }}
-    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
-    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
 spec:
   type: {{ $.Values.service.type }}
   ports:
@@ -25,9 +22,6 @@ spec:
   selector:
     availability-zone: {{ $zone.name }}
     app.kubernetes.io/name: {{ $appName }}
-    app.kubernetes.io/managed-by: {{ $.Release.Service }}
-    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
     app.kubernetes.io/instance: {{ $.Release.Name }}
-    helm.sh/chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
 ---
 {{- end}}
