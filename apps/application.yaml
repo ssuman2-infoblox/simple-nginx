@@ -55,4 +55,4 @@ spec:
         valuesFrom:
           - kind: ConfigMap
             name: simple-nginx-values
-        version: v1.1.0-sujay
+        version: v1.1.1-sujay
